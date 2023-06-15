@@ -1,0 +1,187 @@
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+import java.awt.event.ActionEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+
+public class AppointmentList extends JFrame {
+
+    private JPanel contentPane;
+    private JTextField Name;
+    private JTextField PhoneNo;
+    private JTextField Address;
+    private JTextField EmailAddress;
+    private JTextField Birthdate;
+    private DefaultTableModel model;
+    protected Vector<?> row;
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    AppointmentList frame = new AppointmentList();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public AppointmentList() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1000, 563);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JButton listbtn = new JButton("");
+        listbtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TableFrame tableFrame = new TableFrame(model);
+                tableFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+        JButton btnNewButton = new JButton("SAVE INFO");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String name = Name.getText();
+                String phoneNo = PhoneNo.getText();
+                String address = Address.getText();
+                String emailAddress = EmailAddress.getText();
+                String birthdate = Birthdate.getText();
+
+                // Add the row to the table model
+                model.addRow(new Object[]{name, phoneNo, address, emailAddress, birthdate});
+
+                // Save the information to a file
+                saveDataToFile();
+            }
+        });
+
+        btnNewButton.setBounds(419, 435, 117, 23);
+        contentPane.add(btnNewButton);
+        listbtn.setBounds(10, 267, 202, 75);
+        listbtn.setBorderPainted(false);
+        listbtn.setContentAreaFilled(false);
+        listbtn.setOpaque(false);
+        contentPane.add(listbtn);
+
+        // Create the table model
+        model = new DefaultTableModel();
+        model.addColumn("Name");
+        model.addColumn("PhoneNo");
+        model.addColumn("Address");
+        model.addColumn("EmailAddress");
+        model.addColumn("Birthdate");
+
+        // Load the data from file
+        loadDataFromFile();
+
+        JLabel lblNewLabel_1 = new JLabel("Name:");
+        lblNewLabel_1.setBounds(287, 187, 88, 23);
+        contentPane.add(lblNewLabel_1);
+
+        JLabel lblNewLabel_1_1 = new JLabel("PhoneNo:");
+        lblNewLabel_1_1.setBounds(287, 241, 88, 23);
+        contentPane.add(lblNewLabel_1_1);
+
+        JLabel lblNewLabel_1_2 = new JLabel("Address");
+        lblNewLabel_1_2.setBounds(287, 329, 88, 23);
+        contentPane.add(lblNewLabel_1_2);
+
+        JLabel lblNewLabel_1_3 = new JLabel("EmailAddress:");
+        lblNewLabel_1_3.setBounds(287, 379, 88, 23);
+        contentPane.add(lblNewLabel_1_3);
+
+        JLabel lblNewLabel_1_2_1 = new JLabel("Birthdate:");
+        lblNewLabel_1_2_1.setBounds(287, 285, 67, 23);
+        contentPane.add(lblNewLabel_1_2_1);
+
+        Name = new JTextField();
+        Name.setBounds(375, 187, 161, 20);
+        contentPane.add(Name);
+        Name.setColumns(10);
+
+        PhoneNo = new JTextField();
+        PhoneNo.setColumns(10);
+        PhoneNo.setBounds(375, 241, 161, 20);
+        contentPane.add(PhoneNo);
+
+        Address = new JTextField();
+        Address.setColumns(10);
+        Address.setBounds(375, 329, 161, 20);
+        contentPane.add(Address);
+
+        EmailAddress = new JTextField();
+        EmailAddress.setColumns(10);
+        EmailAddress.setBounds(375, 379, 161, 20);
+        contentPane.add(EmailAddress);
+
+        Birthdate = new JTextField();
+        Birthdate.setColumns(10);
+        Birthdate.setBounds(375, 287, 161, 20);
+        contentPane.add(Birthdate);
+
+        JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\HP\\Downloads\\AppointmentList.jpg"));
+        lblNewLabel.setBounds(0, 0, 1000, 526);
+        contentPane.add(lblNewLabel);
+    }
+
+    private void saveDataToFile() {
+        try {
+            FileWriter writer = new FileWriter("appointment_data.txt");
+            int rowCount = model.getRowCount();
+            int columnCount = model.getColumnCount();
+
+            // Write the table data to the file
+            for (int i = 0; i < rowCount; i++) {
+                for (int j = 0; j < columnCount; j++) {
+                    writer.write(model.getValueAt(i, j) + ",");
+                }
+                writer.write("\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadDataFromFile() {
+        try {
+            FileReader reader = new FileReader("appointment_data.txt");
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Add the row to the table model
+                model.addRow(data);
+            }
+
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
