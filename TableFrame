@@ -1,0 +1,21 @@
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class TableFrame extends JFrame {
+    private JTable table;
+    private DefaultTableModel model;
+
+    public TableFrame(DefaultTableModel tableModel) {
+        model = tableModel;
+
+        setTitle("Appointment Details");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        getContentPane().add(scrollPane);
+    }
+}
