@@ -1,21 +1,76 @@
+import java.awt.EventQueue;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
-public class TableFrame extends JFrame {
-    private JTable table;
-    private DefaultTableModel model;
+public class Billing extends JFrame {
 
-    public TableFrame(DefaultTableModel tableModel) {
-        model = tableModel;
+    private JPanel contentPane;
 
-        setTitle("Appointment Details");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Billing frame = new Billing(null);
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-        table = new JTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        getContentPane().add(scrollPane);
+    public Billing(String treatment) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Dispose the frame instead of exiting the application
+        setBounds(100, 100, 1000, 563);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+
+        double billAmount = 0.0;
+        if (treatment.equals("Teeth Cleaning")) {
+            billAmount = 1500;
+        } else if (treatment.equals("Teeth Whitening")) {
+            billAmount = 5000;
+        } else if (treatment.equals("Extraction")) {
+            billAmount = 2000;
+        }else if (treatment.equals("Veneers")) {
+            billAmount = 8000;
+        }else if (treatment.equals("Crowns")) {
+            billAmount = 10000;
+        }else if (treatment.equals("Root Canal")) {
+            billAmount = 5000;
+        }else if (treatment.equals("Braces")) {
+            billAmount = 50000;
+        }else if (treatment.equals("Bonding")) {
+            billAmount = 2500;
+        }else if (treatment.equals("Dentures")) {
+            billAmount = 10000;
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid treatment selection!");
+            dispose(); // Close the frame if treatment is invalid
+            return; // Stop further execution of the constructor
+        }
+        contentPane.setLayout(null);
+        
+        JLabel lblNewLabel = new JLabel("Treatment: " + treatment);
+        lblNewLabel.setBounds(148, 206, 200, 30);
+        contentPane.add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("Bill Amount: PHP" + billAmount);
+        lblNewLabel_1.setBounds(148, 266, 200, 30);
+        contentPane.add(lblNewLabel_1);
+        
+                JLabel lblNewLabel_2 = new JLabel("New label");
+                lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\HP\\Downloads\\Billing.jpg"));
+                lblNewLabel_2.setBounds(0, 0, 1000, 563);
+                contentPane.add(lblNewLabel_2);
+        
+
+        // Show billing information in a dialog box
+        JOptionPane.showMessageDialog(null, "Treatment: " + treatment + "\nBill Amount: PHP" + billAmount);
     }
 }
