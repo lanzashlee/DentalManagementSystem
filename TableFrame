@@ -2,6 +2,11 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class TableFrame extends JFrame {
     private JTable table;
@@ -11,11 +16,59 @@ public class TableFrame extends JFrame {
         model = tableModel;
 
         setTitle("Appointment Details");
-        setSize(800, 600);
+        setBounds(100, 100, 1000, 563);
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        getContentPane().setLayout(null);
+        
         table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(290, 157, 669, 270);
         getContentPane().add(scrollPane);
+        
+        JButton btnDelete = new JButton("Delete");
+        btnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    model.removeRow(selectedRow);
+                }
+            }
+        });
+        btnDelete.setBounds(870, 459, 89, 23);
+        getContentPane().add(btnDelete);
+        
+        JLabel lblNewLabel = new JLabel("New label");
+        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\HP\\Downloads\\AppointmentList2.jpg"));
+        lblNewLabel.setBounds(0, 0, 1000, 563);
+        getContentPane().add(lblNewLabel);
+        
+        JButton btnback = new JButton("");
+        btnback.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Login login = new Login();
+                login.setVisible(true);
+                dispose();
+            }
+        });
+        btnback.setBounds(927, 22, 49, 32);
+        btnback.setBorderPainted(false);
+        btnback.setContentAreaFilled(false);
+        btnback.setOpaque(false);
+        getContentPane().add(btnback);
+        
+        JButton btnNewButton = new JButton("");
+        btnNewButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		AppointmentList AppointmentList = new AppointmentList();
+        		AppointmentList.setVisible(true);
+        		dispose();
+        	}
+        });
+        btnNewButton.setBounds(10, 129, 195, 86);
+        btnNewButton.setBorderPainted(false);
+        btnNewButton.setContentAreaFilled(false);
+        btnNewButton.setOpaque(false);
+        getContentPane().add(btnNewButton);
     }
 }
