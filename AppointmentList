@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -25,8 +26,11 @@ public class AppointmentList extends JFrame {
     private JTextField Address;
     private JTextField EmailAddress;
     private JTextField Birthdate;
+    private JComboBox<String> Treatment;
+    private JComboBox<String> dateComboBox;
+    private JComboBox<String> dayComboBox;
+    private JComboBox<String> timeComboBox;
     private DefaultTableModel model;
-    protected Vector<?> row;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -67,12 +71,20 @@ public class AppointmentList extends JFrame {
                 String address = Address.getText();
                 String emailAddress = EmailAddress.getText();
                 String birthdate = Birthdate.getText();
+                String treatment = Treatment.getSelectedItem().toString();
+                String date = dateComboBox.getSelectedItem().toString();
+                String day = dayComboBox.getSelectedItem().toString();
+                String time = timeComboBox.getSelectedItem().toString();
 
                 // Add the row to the table model
-                model.addRow(new Object[]{name, phoneNo, address, emailAddress, birthdate});
+                model.addRow(new Object[]{name, phoneNo, address, emailAddress, birthdate, treatment, date, day, time});
 
                 // Save the information to a file
                 saveDataToFile();
+                
+             // Display the billing information
+                Billing billingFrame = new Billing(treatment);
+                billingFrame.setVisible(true);
             }
         });
 
@@ -91,6 +103,10 @@ public class AppointmentList extends JFrame {
         model.addColumn("Address");
         model.addColumn("EmailAddress");
         model.addColumn("Birthdate");
+        model.addColumn("Treatment");
+        model.addColumn("Date");
+        model.addColumn("Day");
+        model.addColumn("Time");
 
         // Load the data from file
         loadDataFromFile();
@@ -114,6 +130,22 @@ public class AppointmentList extends JFrame {
         JLabel lblNewLabel_1_2_1 = new JLabel("Birthdate:");
         lblNewLabel_1_2_1.setBounds(287, 285, 67, 23);
         contentPane.add(lblNewLabel_1_2_1);
+
+        JLabel lblNewLabel_1_4 = new JLabel("Treatment:");
+        lblNewLabel_1_4.setBounds(685, 187, 88, 23);
+        contentPane.add(lblNewLabel_1_4);
+
+        JLabel lblNewLabel_1_1_1 = new JLabel("Date:");
+        lblNewLabel_1_1_1.setBounds(685, 241, 88, 23);
+        contentPane.add(lblNewLabel_1_1_1);
+        
+        JLabel lblNewLabel_2 = new JLabel("Day:");
+        lblNewLabel_2.setBounds(685, 289, 49, 14);
+        contentPane.add(lblNewLabel_2);
+
+        JLabel lblNewLabel_1_1_2 = new JLabel("Time:");
+        lblNewLabel_1_1_2.setBounds(685, 342, 88, 23);
+        contentPane.add(lblNewLabel_1_1_2);
 
         Name = new JTextField();
         Name.setBounds(375, 187, 161, 20);
@@ -140,6 +172,61 @@ public class AppointmentList extends JFrame {
         Birthdate.setBounds(375, 287, 161, 20);
         contentPane.add(Birthdate);
 
+        Treatment = new JComboBox<String>();
+        Treatment.setBounds(773, 187, 161, 20);
+        Treatment.addItem("Teeth Cleaning");
+        Treatment.addItem("Teeth Whitening");
+        Treatment.addItem("Extraction");
+        Treatment.addItem("Veneers");
+        Treatment.addItem("Crowns");
+        Treatment.addItem("Root Canal");
+        Treatment.addItem("Braces");
+        Treatment.addItem("Bonding");
+        Treatment.addItem("Dentures");
+        contentPane.add(Treatment);
+
+        dateComboBox = new JComboBox<String>();
+        dateComboBox.setBounds(773, 241, 80, 20);
+        dateComboBox.addItem("January");
+        dateComboBox.addItem("February");
+        dateComboBox.addItem("March");
+        dateComboBox.addItem("April");
+        dateComboBox.addItem("May");
+        dateComboBox.addItem("June");
+        dateComboBox.addItem("July");
+        dateComboBox.addItem("August");
+        dateComboBox.addItem("September");
+        dateComboBox.addItem("October");
+        dateComboBox.addItem("November");
+        dateComboBox.addItem("December");
+        // Add more months and dates as needed
+        contentPane.add(dateComboBox);
+        
+
+        timeComboBox = new JComboBox<String>();
+        timeComboBox.setBounds(773, 343, 80, 20);
+        timeComboBox.addItem("9:00 AM");
+        timeComboBox.addItem("10:00 AM");
+        timeComboBox.addItem("11:00 AM");
+        timeComboBox.addItem("12:00 AM");
+        timeComboBox.addItem("1:00 PM");
+        timeComboBox.addItem("1:30 PM");
+        timeComboBox.addItem("2:00 PM");
+        // Add more time options as needed
+        contentPane.add(timeComboBox);
+        
+        
+        dayComboBox = new JComboBox<String>();
+        dayComboBox.setBounds(773, 285, 80, 22);
+        dayComboBox.addItem("Monday");
+        dayComboBox.addItem("Tuesday");
+        dayComboBox.addItem("Wednesday");
+        dayComboBox.addItem("Thursday");
+        dayComboBox.addItem("Friday");
+        dayComboBox.addItem("Saturday");
+        contentPane.add(dayComboBox);
+        
+    
         JLabel lblNewLabel = new JLabel("");
         lblNewLabel.setIcon(new ImageIcon("C:\\Users\\HP\\Downloads\\AppointmentList.jpg"));
         lblNewLabel.setBounds(0, 0, 1000, 526);
@@ -169,17 +256,20 @@ public class AppointmentList extends JFrame {
     private void loadDataFromFile() {
         try {
             FileReader reader = new FileReader("appointment_data.txt");
-            BufferedReader bufferedReader = new BufferedReader(reader);
+            BufferedReader br = new BufferedReader(reader);
 
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] data = line.split(",");
-
-                // Add the row to the table model
-                model.addRow(data);
+            while ((line = br.readLine()) != null) {
+                Vector<Object> rowData = new Vector<Object>();
+                String[] values = line.split(",");
+                for (String value : values) {
+                    rowData.add(value);
+                }
+                model.addRow(rowData);
             }
 
-            bufferedReader.close();
+            br.close();
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
